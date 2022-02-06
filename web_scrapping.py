@@ -5,14 +5,17 @@ url = "https://www12.senado.leg.br/ecidadania"
 filter = "+".join(input("Digite o filtro de busca: ").lower().split())
 first_page = requests.get(f"{url}/pesquisaideia?pesquisa={filter}", headers={'Cache-Control': 'no-cache'})
 
-parser = BeautifulSoup(first_page.content, 'html.parser')
-pagination = parser.find_all("a", {"class": "page-link", "title": "último"})
-if pagination != []:
-    last_page = int(re.search("p=[0-9]{1,4}", pagination).group(0).replace("p=", ""))
-else:
-    last_page = 1
+def find_last_page_to_search(first_page):
+    parser = BeautifulSoup(first_page.content, 'html.parser')
+    pagination = parser.find_all("a", {"class": "page-link", "title": "último"})
+    if len(pagination) > 0:
+        last_page = int(re.search("p=[0-9]{1,4}", str(pagination)).group(0).replace("p=", ""))
+        return last_page
+    else:
+        return 1
 
 ideas = {}
+last_page = int(find_last_page_to_search(first_page))
 start_time = time.time()
 for page in range(1, last_page+1):
     print(f"Página {page} sendo executada")
