@@ -2,7 +2,7 @@ import csv, time, re, requests
 from bs4 import BeautifulSoup
 
 url = "https://www12.senado.leg.br/ecidadania"
-filter = "ideologia+de+gênero"
+filter = "+".join(input("Digite o filtro de busca: ").lower().split())
 first_page = requests.get(f"{url}/pesquisaideia?pesquisa={filter}", headers={'Cache-Control': 'no-cache'})
 
 parser = BeautifulSoup(first_page.content, 'html.parser')
