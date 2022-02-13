@@ -9,7 +9,6 @@ app = Flask(__name__)
 def home_page():
     if request.method == "POST":
         data = request.form.get("filter")
-        breakpoint()
         return redirect(url_for('processing', data=data))
     return render_template('home_page.html')
 
