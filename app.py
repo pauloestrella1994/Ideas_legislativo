@@ -1,5 +1,6 @@
 from distutils.command.build_scripts import first_line_re
 from flask import Flask, render_template, request, redirect, url_for
+from threading import Thread
 from web_scrapping import ScrapeData
 
 
@@ -14,5 +15,7 @@ def home_page():
 
 @app.route("/processing/<data>", methods=["GET"])
 def processing(data):
-    ScrapeData(data).execute()
+    scrape = ScrapeData(data)
+    thr = Thread(target=scrape.execute)
+    thr.start()
     return render_template("processing.html")
