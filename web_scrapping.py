@@ -2,8 +2,8 @@ import csv, bs4, time, re, requests
 
 
 class ScrapeData:
-    def __init__(self, url: str, filter_name: str) -> None:
-        self.url = url
+    def __init__(self, filter_name: str) -> None:
+        self.url = "https://www12.senado.leg.br/ecidadania"
         self.filter_name = filter_name
         return
 
@@ -29,6 +29,7 @@ class ScrapeData:
         return
 
     def execute(self) -> None:
+        start_time = time.time()
         last_page = self.get_last_page_to_search()
         ideas = {}
         for page in range(1, last_page+1):
@@ -46,14 +47,12 @@ class ScrapeData:
                 text = first_paragraph + " " + second_paragraph
                 ideas[title] = text
         self.add_data_in_csv(ideas)
+        execution_time = time.time() - start_time
+        print(f"Execution time: {execution_time}")
+        print("Finished")
         return
 
 
 if __name__ == '__main__':
-    url = "https://www12.senado.leg.br/ecidadania"
     filter = "+".join(input("Digite o filtro de busca: ").lower().split())
-    start_time = time.time()
-    ScrapeData(url, filter).execute()
-    execution_time = time.time() - start_time
-    print(f"Execution time: {execution_time}")
-    print("Finished")
+    ScrapeData(filter).execute()

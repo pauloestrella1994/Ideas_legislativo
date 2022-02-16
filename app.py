@@ -14,7 +14,5 @@ def home_page():
 
 @app.route("/processing/<data>", methods=["GET"])
 def processing(data):
+    ScrapeData(data).execute()
     return render_template("processing.html")
-
-
-app.run(debug=True)
