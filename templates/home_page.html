@@ -24,7 +24,12 @@
     <h1 id="Title">Bem vindo ao web scrapping de Ideias do Legislativo</h1>
     <form method="post">
         <input type="text" class="filter" name="filter" placeholder="Digite o seu filtro de busca">
-        <input type="submit">
+        <input type="submit" onclick="showMessage()">
     </form>
+    <script type="text/javascript">
+        function showMessage(){
+            alert("Isso pode demorar alguns minutos");
+        }
+    </script>
 </body>
 </html>
