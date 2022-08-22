@@ -1,10 +1,16 @@
 from distutils.command.build_scripts import first_line_re
-from flask import Flask, render_template, request, redirect, url_for
+import mimetypes
+from flask import Flask, render_template, request, redirect, url_for, Response
 from threading import Thread
 from web_scrapping import ScrapeData
 
 
 app = Flask(__name__)
+
+def get_csv():
+    with open('dados_legislativo.csv') as file:
+        csv = file.read()
+    return csv
 
 @app.route("/home", methods=["GET","POST"])
 def home_page():
@@ -18,4 +24,14 @@ def processing(data):
     scrape = ScrapeData(data)
     thr = Thread(target=scrape.execute)
     thr.start()
-    return render_template("processing.html")
+    thr.join()
+    csv = get_csv()
+    print(csv)
+    return Response(
+        csv, 
+        mimetype="text/csv",
+        headers={
+            "Content-disposition":
+                "attachment; filename=dados_legislativo.csv"        
+        }
+    )
