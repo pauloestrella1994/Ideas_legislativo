@@ -26,7 +26,6 @@ def processing(data):
     thr.start()
     thr.join()
     csv = get_csv()
-    print(csv)
     return Response(
         csv, 
         mimetype="text/csv",
