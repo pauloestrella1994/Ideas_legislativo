@@ -1,5 +1,3 @@
-from distutils.command.build_scripts import first_line_re
-import mimetypes
 from flask import Flask, render_template, request, redirect, url_for, Response
 from threading import Thread
 from web_scrapping import ScrapeData
