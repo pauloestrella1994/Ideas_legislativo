@@ -1,4 +1,4 @@
-import csv, bs4, time, re, requests
+import bs4, time, re, requests
 
 
 class ScrapeData:
@@ -8,7 +8,10 @@ class ScrapeData:
         return
 
     def get_first_page(self) -> requests.models.Response:
-        return requests.get(f"{self.url}/pesquisaideia?pesquisa={self.filter_name}", headers={'Cache-Control': 'no-cache'}) 
+        return requests.get(
+            f"{self.url}/pesquisaideia?pesquisa={self.filter_name}",
+            headers={'Cache-Control': 'no-cache'}
+        ) 
 
     def get_last_page_to_search(self) -> int:
         first_page = self.get_first_page()
@@ -20,15 +23,14 @@ class ScrapeData:
         else:
             return 1
 
-    def add_data_in_csv(self, ideas: dict) -> None:
-        with open("dados_legislativo.csv", "w") as csvfile:
-            csv_write = csv.writer(csvfile)
-            csv_write.writerow(["Ideias", "Texto"])
-            for item in ideas:
-                csv_write.writerow([item,ideas[item]])
-        return
+    def add_data_in_csv(self, ideas: dict) -> str:
+        csv_content = []
+        csv_content.append(','.join(["Ideias", "Texto"]) + '\n')
+        for item in ideas:
+            csv_content.append(','.join([item,ideas[item]]) + '\n')
+        return csv_content
 
-    def execute(self) -> None:
+    def execute(self) -> str:
         start_time = time.time()
         last_page = self.get_last_page_to_search()
         ideas = {}
@@ -46,11 +48,11 @@ class ScrapeData:
                 second_paragraph = article_parser.find_all("div", {"id": "collapseOne"})[0].text
                 text = first_paragraph + " " + second_paragraph
                 ideas[title] = text
-        self.add_data_in_csv(ideas)
+        csv_content = self.add_data_in_csv(ideas)
         execution_time = time.time() - start_time
         print(f"Execution time: {execution_time}")
         print("Finished")
-        return
+        return csv_content
 
 
 if __name__ == '__main__':

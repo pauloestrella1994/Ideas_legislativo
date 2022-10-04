@@ -1,14 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for, Response
-from threading import Thread
 from web_scrapping import ScrapeData
 
 
 app = Flask(__name__)
-
-def get_csv():
-    with open('dados_legislativo.csv') as file:
-        csv = file.read()
-    return csv
 
 @app.route("/home", methods=["GET","POST"])
 def home_page():
@@ -20,10 +14,7 @@ def home_page():
 @app.route("/processing/<data>", methods=["GET"])
 def processing(data):
     scrape = ScrapeData(data)
-    thr = Thread(target=scrape.execute)
-    thr.start()
-    thr.join()
-    csv = get_csv()
+    csv = scrape.execute()
     return Response(
         csv, 
         mimetype="text/csv",
