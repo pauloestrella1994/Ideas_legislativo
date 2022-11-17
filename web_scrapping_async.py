@@ -28,18 +28,17 @@ async def execute(url, last_page, filter_name):
     async with aiohttp.ClientSession() as session:
 
         for page in range(1, last_page+1):
-            print(page)
             url = f"{url}/pesquisaideia?p={page}&pesquisa={filter_name}"
             async with session.get(url) as resp:
                 data = await resp.text()
                 data_parser = bs4.BeautifulSoup(data, 'html.parser')
                 proposes = data_parser.find_all("article", {"class":"resumo-ideia"})
-                
                 for idea in proposes:
                     id = idea.find("a")["href"]
                     async with session.get(f"{url}/{id}") as resp:
-                        data_idea = await resp.text()
-                        article_parser = bs4.BeautifulSoup(data_idea, 'html.parser')
+                        response = await resp.text()
+                        data_ideia = bs4.BeautifulSoup(response, 'html.parser')
+                        article_parser = data_ideia.find("a")["href"]
                         title = article_parser.find_all("div", {"style":"font-size:24px;margin-bottom:15px;"})[0].text
                         first_paragraph = article_parser.find_all("div", {"style": "margin-bottom:15px;"})[0].text
                         second_paragraph = article_parser.find_all("div", {"id": "collapseOne"})[0].text
